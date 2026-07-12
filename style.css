@@ -40,7 +40,8 @@ html, body {
   gap: 0.5rem;
   position: absolute;
   top: calc(env(safe-area-inset-top) + 1.5rem);
-  max-width: calc(100vw - 3rem);
+  left: 1.5rem;
+  right: 1.5rem;
 }
 
 .pattern-pill {
