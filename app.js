@@ -1,0 +1,147 @@
+// OneBreath — one button, one breathing pattern, done.
+
+const PATTERNS = {
+  box: {
+    label: "Box",
+    cycles: 5,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 4 },
+      { name: "hold", label: "Hold", duration: 4 },
+      { name: "exhale", label: "Exhale", duration: 4 },
+      { name: "hold", label: "Hold", duration: 4 },
+    ],
+  },
+  relax478: {
+    label: "4-7-8",
+    cycles: 4,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 4 },
+      { name: "hold", label: "Hold", duration: 7 },
+      { name: "exhale", label: "Exhale", duration: 8 },
+    ],
+  },
+  calm46: {
+    label: "Calm",
+    cycles: 6,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 4 },
+      { name: "exhale", label: "Exhale", duration: 6 },
+    ],
+  },
+};
+
+const STORAGE_KEY = "onebreath.pattern";
+
+const circle = document.getElementById("circle");
+const phaseLabel = document.getElementById("phase-label");
+const hint = document.getElementById("hint");
+const pills = Array.from(document.querySelectorAll(".pattern-pill"));
+
+let currentPatternKey = localStorage.getItem(STORAGE_KEY) || "box";
+let running = false;
+let sessionToken = 0; // increments to cancel any in-flight loop
+
+function setActivePill() {
+  pills.forEach((p) => p.classList.toggle("active", p.dataset.pattern === currentPatternKey));
+}
+
+function selectPattern(key) {
+  if (running) return; // no changing pattern mid-session
+  currentPatternKey = key;
+  localStorage.setItem(STORAGE_KEY, key);
+  setActivePill();
+}
+
+pills.forEach((pill) => {
+  pill.addEventListener("click", () => selectPattern(pill.dataset.pattern));
+});
+
+function sleep(seconds, token) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (token !== sessionToken) reject(new Error("cancelled"));
+      else resolve();
+    }, seconds * 1000);
+  });
+}
+
+async function runPhase(phase, token) {
+  if (token !== sessionToken) throw new Error("cancelled");
+  phaseLabel.textContent = phase.label;
+  circle.classList.remove("inhale", "exhale", "hold");
+  circle.classList.add(phase.name);
+
+  if (phase.name === "inhale") {
+    circle.style.transitionDuration = `${phase.duration}s`;
+    circle.style.transform = "scale(1.8)";
+  } else if (phase.name === "exhale") {
+    circle.style.transitionDuration = `${phase.duration}s`;
+    circle.style.transform = "scale(1)";
+  }
+  // hold: no transform change — circle freezes at its current scale
+
+  await sleep(phase.duration, token);
+}
+
+async function runSession() {
+  const token = ++sessionToken;
+  running = true;
+  circle.classList.add("running");
+  hint.textContent = "Tap to stop";
+  document.getElementById("pattern-picker").style.opacity = "0.25";
+
+  const pattern = PATTERNS[currentPatternKey];
+
+  try {
+    for (let cycle = 0; cycle < pattern.cycles; cycle++) {
+      for (const phase of pattern.phases) {
+        await runPhase(phase, token);
+      }
+    }
+    await finishSession(token, "Well done");
+  } catch (e) {
+    // cancelled — stopSession() already handles cleanup
+  }
+}
+
+async function finishSession(token, message) {
+  if (token !== sessionToken) return;
+  phaseLabel.textContent = message;
+  circle.style.transitionDuration = "1.2s";
+  circle.style.transform = "scale(1)";
+  circle.classList.remove("inhale", "exhale", "hold");
+  await sleep(1.4, token).catch(() => {});
+  resetToIdle();
+}
+
+function resetToIdle() {
+  running = false;
+  circle.classList.remove("running", "inhale", "exhale", "hold");
+  circle.style.transitionDuration = "1.2s";
+  circle.style.transform = "scale(1)";
+  phaseLabel.textContent = "Breathe";
+  hint.textContent = "Press the circle";
+  document.getElementById("pattern-picker").style.opacity = "1";
+}
+
+function stopSession() {
+  sessionToken++; // cancels any pending sleep()
+  resetToIdle();
+}
+
+circle.addEventListener("click", () => {
+  if (running) {
+    stopSession();
+  } else {
+    runSession();
+  }
+});
+
+setActivePill();
+
+// Register service worker for offline / installable PWA behaviour.
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}

@@ -1,0 +1,118 @@
+:root {
+  --bg: #0a0a0f;
+  --bg-soft: #111119;
+  --accent: #6fd6c8;
+  --accent-dim: rgba(111, 214, 200, 0.25);
+  --text: #eaeaf0;
+  --text-dim: #7a7a88;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  overscroll-behavior: none;
+}
+
+#app {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  padding: env(safe-area-inset-top) 1.5rem env(safe-area-inset-bottom);
+}
+
+/* Pattern picker */
+#pattern-picker {
+  display: flex;
+  gap: 0.5rem;
+  position: absolute;
+  top: calc(env(safe-area-inset-top) + 1.5rem);
+}
+
+.pattern-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  transition: all 0.25s ease;
+}
+
+.pattern-pill.active {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* Breathing stage */
+#stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(70vw, 300px);
+  height: min(70vw, 300px);
+}
+
+#circle {
+  all: unset;
+  width: 55%;
+  height: 55%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: radial-gradient(circle at 50% 45%, var(--accent) 0%, var(--accent-dim) 70%, transparent 100%);
+  box-shadow: 0 0 60px var(--accent-dim);
+  transition: transform 4s cubic-bezier(0.45, 0, 0.55, 1), box-shadow 4s ease;
+  transform: scale(1);
+}
+
+#circle.running {
+  cursor: default;
+}
+
+#circle.inhale {
+  box-shadow: 0 0 100px var(--accent-dim);
+}
+
+#circle.exhale {
+  box-shadow: 0 0 60px var(--accent-dim);
+}
+
+#circle.hold {
+  /* transform is frozen by JS — no CSS override */
+}
+
+#phase-label {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--bg);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+}
+
+#circle:not(.running) #phase-label {
+  color: var(--bg);
+}
+
+#hint {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  min-height: 1.2em;
+}

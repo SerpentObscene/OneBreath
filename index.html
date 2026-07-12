@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+<title>OneBreath</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#0a0a0f" />
+
+<!-- iOS home-screen support (also used later when wrapped for the App Store) -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="OneBreath" />
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+
+<link rel="icon" href="icons/icon-192.png" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main id="app">
+
+  <!-- Pattern picker: three quiet pills, no settings screen -->
+  <div id="pattern-picker" role="tablist" aria-label="Breathing pattern">
+    <button class="pattern-pill" data-pattern="box" role="tab">Box</button>
+    <button class="pattern-pill" data-pattern="relax478" role="tab">4-7-8</button>
+    <button class="pattern-pill" data-pattern="calm46" role="tab">Calm</button>
+  </div>
+
+  <div id="stage">
+    <button id="circle" aria-label="Press to breathe">
+      <span id="phase-label">Breathe</span>
+    </button>
+  </div>
+
+  <p id="hint">Press the circle</p>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
