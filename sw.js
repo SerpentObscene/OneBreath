@@ -1,6 +1,6 @@
 // OneBreath service worker — cache-first app shell for offline / instant open.
 
-const CACHE_NAME = "onebreath-v2";
+const CACHE_NAME = "onebreath-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
