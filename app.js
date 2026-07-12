@@ -28,6 +28,40 @@ const PATTERNS = {
       { name: "exhale", label: "Exhale", duration: 6 },
     ],
   },
+  coherent: {
+    label: "Coherent",
+    cycles: 6,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 5 },
+      { name: "exhale", label: "Exhale", duration: 5 },
+    ],
+  },
+  extend48: {
+    label: "4-8",
+    cycles: 6,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 4 },
+      { name: "exhale", label: "Exhale", duration: 8 },
+    ],
+  },
+  triangle: {
+    label: "Triangle",
+    cycles: 5,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 4 },
+      { name: "hold", label: "Hold", duration: 4 },
+      { name: "exhale", label: "Exhale", duration: 4 },
+    ],
+  },
+  sigh: {
+    label: "Sigh",
+    cycles: 5,
+    phases: [
+      { name: "inhale", label: "Inhale", duration: 2 },
+      { name: "hold", label: "Sip", duration: 1 },
+      { name: "exhale", label: "Exhale", duration: 8 },
+    ],
+  },
 };
 
 const STORAGE_KEY = "onebreath.pattern";

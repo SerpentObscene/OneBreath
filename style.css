@@ -38,6 +38,15 @@ html, body {
   gap: 0.5rem;
   position: absolute;
   top: calc(env(safe-area-inset-top) + 1.5rem);
+  max-width: calc(100vw - 3rem);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px; /* prevent clipping active pill outline */
+}
+
+#pattern-picker::-webkit-scrollbar {
+  display: none;
 }
 
 .pattern-pill {
