@@ -28,25 +28,18 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2.5rem;
+  gap: 1.5rem;
   padding: env(safe-area-inset-top) 1.5rem env(safe-area-inset-bottom);
 }
 
 /* Pattern picker */
 #pattern-picker {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
-  position: absolute;
-  top: calc(env(safe-area-inset-top) + 1.5rem);
-  max-width: calc(100vw - 3rem);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px; /* prevent clipping active pill outline */
-}
-
-#pattern-picker::-webkit-scrollbar {
-  display: none;
+  max-width: 340px;
+  padding-top: env(safe-area-inset-top);
 }
 
 .pattern-pill {
