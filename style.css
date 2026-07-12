@@ -120,3 +120,18 @@ html, body {
   letter-spacing: 0.02em;
   min-height: 1.2em;
 }
+
+#mute-btn {
+  all: unset;
+  position: absolute;
+  bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
+  right: 1.5rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+#mute-btn:hover {
+  opacity: 1;
+}

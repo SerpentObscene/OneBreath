@@ -65,6 +65,23 @@ const PATTERNS = {
 };
 
 const STORAGE_KEY = "onebreath.pattern";
+const VOICE_KEY = "onebreath.voice";
+
+const AUDIO = {};
+["inhale", "exhale", "hold", "sip", "well-done"].forEach((name) => {
+  AUDIO[name] = new Audio(`audio/${name}.mp3`);
+});
+
+let voiceEnabled = localStorage.getItem(VOICE_KEY) !== "false";
+
+function speak(label) {
+  if (!voiceEnabled) return;
+  const key = label.toLowerCase().replace(" ", "-");
+  const clip = AUDIO[key];
+  if (!clip) return;
+  clip.currentTime = 0;
+  clip.play().catch(() => {});
+}
 
 const circle = document.getElementById("circle");
 const phaseLabel = document.getElementById("phase-label");
@@ -102,6 +119,7 @@ function sleep(seconds, token) {
 async function runPhase(phase, token) {
   if (token !== sessionToken) throw new Error("cancelled");
   phaseLabel.textContent = phase.label;
+  speak(phase.label);
   circle.classList.remove("inhale", "exhale", "hold");
   circle.classList.add(phase.name);
 
@@ -141,6 +159,7 @@ async function runSession() {
 async function finishSession(token, message) {
   if (token !== sessionToken) return;
   phaseLabel.textContent = message;
+  speak(message);
   circle.style.transitionDuration = "1.2s";
   circle.style.transform = "scale(1)";
   circle.classList.remove("inhale", "exhale", "hold");
@@ -171,6 +190,22 @@ circle.addEventListener("click", () => {
   }
 });
 
+const muteBtn = document.getElementById("mute-btn");
+const iconOn = document.getElementById("icon-on");
+const iconOff = document.getElementById("icon-off");
+
+function updateMuteUI() {
+  iconOn.style.display = voiceEnabled ? "" : "none";
+  iconOff.style.display = voiceEnabled ? "none" : "";
+}
+
+muteBtn.addEventListener("click", () => {
+  voiceEnabled = !voiceEnabled;
+  localStorage.setItem(VOICE_KEY, voiceEnabled);
+  updateMuteUI();
+});
+
+updateMuteUI();
 setActivePill();
 
 // Register service worker for offline / installable PWA behaviour.
