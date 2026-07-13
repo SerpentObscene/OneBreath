@@ -81,7 +81,8 @@ html, body {
   cursor: pointer;
   background: radial-gradient(circle at 50% 45%, var(--accent) 0%, var(--accent-dim) 70%, transparent 100%);
   box-shadow: 0 0 60px var(--accent-dim);
-  transition: transform 4s cubic-bezier(0.45, 0, 0.55, 1), box-shadow 4s ease;
+  /* transition shorthand is set in JS per-phase for asymmetric easing */
+  transition: transform 1.2s ease, box-shadow 1.2s ease;
   transform: scale(1);
 }
 
