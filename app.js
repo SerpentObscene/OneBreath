@@ -72,52 +72,20 @@ const EASE_FINISH = "cubic-bezier(0.33, 1, 0.68, 1)";   // ease-out for ceremoni
 const STORAGE_KEY = "onebreath.pattern";
 const VOICE_KEY   = "onebreath.voice";
 
-// "Well done" is the only spoken-word clip; phases use synthesised tones
-const wellDoneClip = new Audio("audio/well-done.mp3");
+const AUDIO = {};
+["inhale", "exhale", "hold", "sip", "well-done"].forEach((name) => {
+  AUDIO[name] = new Audio(`audio/${name}.mp3`);
+});
 
 let voiceEnabled = localStorage.getItem(VOICE_KEY) !== "false";
-let audioCtx = null;
-
-function getCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === "suspended") audioCtx.resume();
-  return audioCtx;
-}
-
-function playTone({ freqStart, freqEnd, volume = 0.12, duration = 0.55 }) {
-  if (!voiceEnabled) return;
-  const ctx = getCtx();
-  const osc  = ctx.createOscillator();
-  const gain = ctx.createGain();
-  osc.connect(gain);
-  gain.connect(ctx.destination);
-
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(freqStart, ctx.currentTime);
-  osc.frequency.linearRampToValueAtTime(freqEnd, ctx.currentTime + duration);
-
-  // Soft fade-in / fade-out envelope
-  gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.06);
-  gain.gain.setValueAtTime(volume, ctx.currentTime + duration - 0.12);
-  gain.gain.linearRampToValueAtTime(0, ctx.currentTime + duration);
-
-  osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + duration);
-}
 
 function chime(label) {
   if (!voiceEnabled) return;
-  switch (label.toLowerCase()) {
-    case "inhale": playTone({ freqStart: 420, freqEnd: 640, duration: 0.6 }); break;
-    case "exhale": playTone({ freqStart: 620, freqEnd: 360, duration: 0.6 }); break;
-    case "hold":   playTone({ freqStart: 500, freqEnd: 500, duration: 0.3, volume: 0.08 }); break;
-    case "sip":    playTone({ freqStart: 560, freqEnd: 560, duration: 0.22, volume: 0.07 }); break;
-    case "well done":
-      wellDoneClip.currentTime = 0;
-      wellDoneClip.play().catch(() => {});
-      break;
-  }
+  const key  = label.toLowerCase().replace(" ", "-");
+  const clip = AUDIO[key];
+  if (!clip) return;
+  clip.currentTime = 0;
+  clip.play().catch(() => {});
 }
 
 function haptic(pattern) {
